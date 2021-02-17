@@ -94,9 +94,9 @@ def astronaut_selection():
                                 <div>
                                     <form class="login_form" method="post">
                                         <input class="form-control"  placeholder="Введите фамилию">
-                                        <input class="form-control" placeholder="Введите имя">
+                                        <input class="form-control" placeholder="Введите имя"">
                                         <div class="form-group">
-                                            <input class="form-control" type="email" placeholder="Введите адрес почты">
+                                            <input name="email" class="form-control" type="email" placeholder="Введите адрес почты">
                                         </div>
                                         <div class="form-group">
                                             <label for="classSelect">Какое у Вас образование?</label>
@@ -175,11 +175,11 @@ def astronaut_selection():
                                             <label>
                                                 Почему Вы хотите принять участие в миссии?
                                             </label>
-                                            <textarea class="form-control" rows="3"></textarea>
+                                            <textarea class="form-control" rows="3" name="about"></textarea>
                                         </div>
                                         <div class="form-group">
                                             <label>Приложите фотографию</label>
-                                            <input type="file" class="form-control-file">
+                                            <input type="file" class="form-control-file" name="file">
                                         </div>
                                         <div class="form-group form-check">
                                             <input type="checkbox" class="form-check-input" id="acceptRules" name="accept">
@@ -192,7 +192,6 @@ def astronaut_selection():
                             </html>'''
     elif request.method == 'POST':
         print(request.form['email'])
-        print(request.form['password'])
         print(request.form['class'])
         print(request.form['file'])
         print(request.form['about'])
@@ -244,6 +243,62 @@ def results(nickname, level: int, rating: float):
 <div class="alert alert-warning">Желаем удачи!</div>
 </body>
 </html>"""
+
+
+@app.route('/load_photo', methods=['POST', 'GET'])
+def load_photo():
+    if request.method == 'GET':
+        return f"""<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" href="{url_for('static', filename='css/style.css')}">
+            <link rel="stylesheet"
+                  href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+                  integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+                  crossorigin="anonymous">
+            <title>Отбор астронавтов</title>
+        </head>
+        <body>
+        <h1 style="text-align:center;">Загрузка фотографии</h1>
+        <h2 style="text-align:center;">для участия в миссии</h2>
+        <form class="login_form" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+            <label>Приложите фотографию</label>
+            <input type="file" class="form-control-file" name="file">
+            </div>
+            <button type="submit" class="btn btn-primary">Отправить</button>
+        </form>
+        </body>
+        </html>"""
+    elif request.method == 'POST':
+        f = request.files['file']
+        with open('static/img/picture.jpg', 'wb') as file:
+            file.write(f.read())
+        return f"""<!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                <link rel="stylesheet" type="text/css" href="{url_for('static', filename='css/style.css')}">
+                    <link rel="stylesheet"
+                          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+                          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+                          crossorigin="anonymous">
+                    <title>Отбор астронавтов</title>
+                </head>
+                <body>
+                <h1 style="text-align:center;">Загрузка фотографии</h1>
+                <h2 style="text-align:center;">для участия в миссии</h2>
+                <form class="login_form" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                    <label>Приложите фотографию</label>
+                    <input type="file" class="form-control-file" name="file">
+                    </div>
+                    <img src="{url_for('static', filename='img/picture.jpg')}">
+                    <button type="submit" class="btn btn-primary">Отправить</button>
+                </form>
+                </body>
+                </html>"""
 
 
 if __name__ == '__main__':
